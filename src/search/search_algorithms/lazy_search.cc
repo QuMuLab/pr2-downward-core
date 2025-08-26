@@ -87,6 +87,12 @@ void LazySearch::initialize() {
     if (PR2.logging.verbose)
         log << "Conducting lazy best first search, (real) bound = " << bound << endl;
 
+    // Only set up the heuristics on the first go
+    if (was_initialized)
+        return;
+    else
+        was_initialized = true;
+
     assert(open_list);
     set<Evaluator *> evals;
     open_list->get_path_dependent_evaluators(evals);
@@ -214,6 +220,13 @@ SearchStatus LazySearch::step() {
         !node.is_dead_end() && (current_g < node.get_g());
 
     if (node.is_new() || reopen) {
+        if (PR2.weaksearch.limit_states) {
+            if (state_count > PR2.weaksearch.max_states)
+                return FAILED;
+            else
+                state_count++;
+        }
+
         if (current_operator_id != OperatorID::no_operator) {
             assert(current_predecessor_id != StateID::no_state);
             if (!path_dependent_evaluators.empty()) {

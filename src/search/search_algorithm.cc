@@ -14,6 +14,8 @@
 #include "utils/timer.h"
 
 #include "pr2/pr2.h"
+#include "pr2/policy.h"
+#include "pr2/deadend.h"
 
 #include <cassert>
 #include <iostream>
@@ -151,6 +153,12 @@ void SearchAlgorithm::set_plan(const Plan &p) {
 }
 
 void SearchAlgorithm::search() {
+    if (PR2.deadend.record_online) {
+        PR2.deadend.found_online.clear();
+        delete PR2.deadend.online_policy;
+        PR2.deadend.online_policy = new Policy<PolicyItem>();
+    }
+
     initialize();
     utils::CountdownTimer timer(max_time);
     while (status == IN_PROGRESS) {
@@ -161,6 +169,12 @@ void SearchAlgorithm::search() {
             break;
         }
     }
+
+    if (PR2.deadend.record_online &&
+            !PR2.weaksearch.limit_states &&
+            PR2.deadend.found_online.size() > 0)
+                update_deadends(PR2.deadend.found_online);
+
     // TODO: Revise when and which search times are logged.
     if (PR2.logging.verbose)
         log << "Actual search time: " << timer.get_elapsed_time() << endl;

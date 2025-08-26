@@ -440,7 +440,12 @@ def parse_args():
     driver_other.add_argument(
         "--cleanup", action="store_true",
         help="clean up temporary files (translator output and plan files) and exit")
-
+ 
+    driver_other.add_argument(
+        "--profile", choices=["none", "time", "memory"],
+        default="none",
+        help="profile the time or memory usage of the search component using valgrind tools")
+    
     parser.add_argument(
         "planner_args", nargs=argparse.REMAINDER,
         help="file names and options passed on to planner components")

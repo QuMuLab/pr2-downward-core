@@ -98,7 +98,7 @@ def build(config_name, configure_parameters, build_parameters):
     print(f"Building configuration {config_name}.")
 
     build_path = get_build_path(config_name)
-    generator_cmd = [CMAKE, "-S", get_src_path(), "-B", build_path]
+    generator_cmd = [CMAKE, "-S", get_src_path(), "-B", build_path, "-DCMAKE_EXPORT_COMPILE_COMMANDS=1"]
     if CMAKE_GENERATOR:
         generator_cmd += ["-G", CMAKE_GENERATOR]
     generator_cmd += configure_parameters
