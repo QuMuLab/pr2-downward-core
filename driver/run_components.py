@@ -124,6 +124,15 @@ def run_search(args):
         portfolio_bound=args.portfolio_bound,
         single_plan=args.portfolio_single_plan)
     plan_manager.delete_existing_plans()
+    # Add profiling options
+
+    profile = []
+    if "time" == args.profile:
+        # args.search_options = '--tool=callgrind --dump-instr=yes --collect-jumps=yes --callgrind-out-file=callgrind.out'.split(' ') + args.search_options
+        profile = "valgrind --tool=callgrind --dump-instr=yes --collect-jumps=yes --callgrind-out-file=callgrind.out".split(' ')
+    elif "memory" == args.profile:
+        # args.search_options = '--leak-check=full --track-origins=yes --log-file=memory-info.out'.split(' ') + args.search_options
+        profile = "valgrind --leak-check=full --track-origins=yes --log-file=memory-info.out".split(' ')
 
     if args.portfolio:
         assert not args.search_options
@@ -140,6 +149,7 @@ def run_search(args):
         try:
             call.check_call(
                 "search",
+                profile +
                 [executable] + args.search_options,
                 stdin=args.search_input,
                 time_limit=time_limit,

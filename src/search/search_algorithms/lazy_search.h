@@ -44,6 +44,9 @@ protected:
     int current_real_g;
     EvaluationContext current_eval_context;
 
+    int state_count; // Used to limit the search when replanning for a local goal
+    bool was_initialized;
+
     virtual void initialize() override;
     virtual SearchStatus step() override;
 
