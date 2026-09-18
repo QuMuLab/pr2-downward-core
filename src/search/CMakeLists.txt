@@ -1,4 +1,4 @@
-# See https://www.fast-downward.org/ForDevelopers/CMake
+# See https://www.fast-downward.org/latest/for-developers/cmake/
 # for general information on adding source files and CMake libraries.
 #
 # All libraries are enabled by default and users can disable them by specifying
@@ -92,6 +92,8 @@ create_fast_downward_library(
         abstract_task
         axioms
         command_line
+        component
+        component_internals
         evaluation_context
         evaluation_result
         evaluator
@@ -177,6 +179,7 @@ create_fast_downward_library(
         utils/system
         utils/system_unix
         utils/system_windows
+        utils/task_lexer
         utils/timer
         utils/tuples
     CORE_LIBRARY
@@ -343,6 +346,16 @@ create_fast_downward_library(
     SOURCES
         evaluators/combining_evaluator
     DEPENDENCY_ONLY
+)
+
+create_fast_downward_library(
+    NAME modify_costs_evaluator
+    HELP "Evaluator modifying the costs"
+    SOURCES
+        evaluators/modify_costs_evaluator
+    DEPENDS
+        core_tasks
+        task_properties
 )
 
 create_fast_downward_library(
@@ -928,7 +941,6 @@ create_fast_downward_library(
         pdbs/max_cliques
         pdbs/pattern_cliques
         pdbs/pattern_collection_information
-        pdbs/pattern_collection_generator_combo
         pdbs/pattern_collection_generator_disjoint_cegar
         pdbs/pattern_collection_generator_genetic
         pdbs/pattern_collection_generator_hillclimbing
